@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chúc Mừng Sinh Nhật Chị Gái Yêu 🎂💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e1b2e 0%, #2a1b3d 50%, #0f0c1b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 10px;
+            overflow-x: hidden;
+            position: relative;
+            color: #fff;
+        }
+
+        /* BỐ CỤC CHÍNH: 3 CỘT (Trái - Giữa - Phải) */
+        .main-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1280px;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        /* Khung bên Trái & Bên Phải chứa ảnh GIF anime */
+        .side-panel {
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .char-box {
+            width: 100%;
+            height: 320px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 158, 187, 0.3);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .char-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6));
+        }
+
+        /* Thanh nút điều khiển dưới mỗi nhân vật (< Upload >) */
+        .char-controls {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .ctrl-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ctrl-btn:hover { background: #ff6b81; }
+
+        .file-label {
+            background: rgba(255, 158, 187, 0.2);
+            border: 1px solid #ff9ebb;
+            color: #ffccdf;
+            padding: 5px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Khung ở giữa (Nội dung chính) */
+        .center-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 750px;
+        }
+
+        header {
+            text-align: center;
+            color: #ff9ebb;
+            margin-bottom: 12px;
+        }
+        header h1 {
+            font-size: 1.8rem;
+            text-shadow: 0 0 15px rgba(255, 158, 187, 0.5);
+            margin-bottom: 4px;
+        }
+        header p {
+            color: #d1c4e9;
+            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        /* Đĩa nhạc & Lyric */
+        .music-visualizer {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 18px;
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .vinyl-container {
+            width: 65px; height: 65px; cursor: pointer; flex-shrink: 0;
+        }
+        .vinyl-disc {
+            width: 100%; height: 100%; background: #111; border-radius: 50%;
+            border: 3px solid #333; display: flex; align-items: center; justify-content: center;
+            animation: spin 4s linear infinite; animation-play-state: paused;
+        }
+        .vinyl-disc.playing { animation-play-state: running; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .vinyl-center { width: 20px; height: 20px; background: #ff9ebb; border-radius: 50%; border: 2px solid #fff; }
+
+        .lyric-box { flex: 1; text-align: center; }
+        #lyricText { font-size: 0.95rem; color: #ffccdf; font-weight: 600; }
+
+        /* Lưới 20 hộp quà */
+        .gifts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        .gift-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            padding: 12px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .gift-card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.2); }
+        .gift-card.opened { opacity: 0.5; cursor: default; transform: none !important; }
+        .gift-icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+        .gift-title { font-size: 0.75rem; font-weight: 700; color: #ff9ebb; }
+
+        /* Nút nhập nhạc */
+        .music-bar {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 10px;
+        }
+        .music-bar input {
+            flex: 1; border: none; outline: none; padding: 6px 10px;
+            border-radius: 15px; font-size: 0.8rem;
+        }
+        .music-bar button {
+            background: #ff6b81; color: white; border: none; padding: 6px 12px;
+            border-radius: 15px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+        }
+
+        /* Nút Không Nhận Quà */
+        .no-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(80, 80, 100, 0.85);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 18px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 99;
+            transition: top 0.15s ease, left 0.15s ease;
+        }
+
+        /* Modal Popup */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            justify-content: center; align-items: center; z-index: 100; padding: 20px;
+        }
+        .modal-content {
+            background: #2a1b3d; border: 1px solid #ff9ebb; color: #fff;
+            padding: 22px; border-radius: 20px; max-width: 380px; width: 100%; text-align: center;
+        }
+        .modal-icon { font-size: 2.8rem; margin-bottom: 10px; }
+        .modal-text { font-size: 0.95rem; line-height: 1.5; margin-bottom: 18px; }
+        .close-btn { background: #ff6b81; color: white; border: none; padding: 8px 20px; border-radius: 15px; cursor: pointer; }
+
+        #yt-player-container { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div id="yt-player-container"><div id="player"></div></div>
+
+    <div class="main-layout">
+        
+        <!-- BÊN TRÁI: Ảnh GIF anime 1 -->
+        <div class="side-panel">
+            <div class="char-box">
+                <img id="leftCharImg" src="https://media.tenor.com/Mdz2s-fOMggAAAAj/the-fragrant-flower-blooms-with-dignity-kaoruko-waguri.gif" alt="Char Left">
+            </div>
+            <div class="char-controls">
+                <button class="ctrl-btn" onclick="prevLeftChar()">&lt;</button>
+                <label class="file-label">
+                    Tải ảnh <input type="file" hidden accept="image/*" onchange="uploadChar(event, 'leftCharImg')">
+                </label>
+                <button class="ctrl-btn" onclick="nextLeftChar()">&gt;</button>
+            </div>
+        </div>
+
+        <!-- Ở GIỮA: Nội dung chính -->
+        <div class="center-panel">
+            <header>
+                <h1>🎉 Chúc Mừng Sinh Nhật Chị Gái 🎂</h1>
+                <p>Mở từng hộp quà để nhận những lời chúc ngọt ngào nhất từ em nhé! 💖</p>
+            </header>
+
+            <div class="music-visualizer">
+                <div class="vinyl-container" onclick="togglePlayPause()">
+                    <div class="vinyl-disc" id="vinylDisc"><div class="vinyl-center"></div></div>
+                </div>
+                <div class="lyric-box">
+                    <div id="lyricText">🎵 Nhấn vào đĩa nhạc hoặc mở quà để phát nhạc...</div>
+                </div>
+            </div>
+
+            <div class="gifts-grid" id="giftsContainer"></div>
+
+            <div class="music-bar">
+                <span>🎧</span>
+                <input type="text" id="ytUrlInput" placeholder="Dán ID YouTube bài hát khác...">
+                <button onclick="changeMusic()">Đổi Nhạc</button>
+            </div>
+        </div>
+
+        <!-- BÊN PHẢI: Ảnh GIF anime 2 -->
+        <div class="side-panel">
+            <div class="char-box">
+                <img id="rightCharImg" src="https://media.tenor.com/XgHyWyO2BqAAAAAM/kaoruhanawarintosaku-kaoruko.gif" alt="Char Right">
+            </div>
+            <div class="char-controls">
+                <button class="ctrl-btn" onclick="prevRightChar()">&lt;</button>
+                <label class="file-label">
+                    Tải ảnh <input type="file" hidden accept="image/*" onchange="uploadChar(event, 'rightCharImg')">
+                </label>
+                <button class="ctrl-btn" onclick="nextRightChar()">&gt;</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Nút chạy trốn -->
+    <button class="no-btn" id="noBtn" onmouseover="dodgeBtn()" ontouchstart="dodgeBtn()">Không nhận tuổi mới 😜</button>
+
+    <!-- Modal Lời Chúc -->
+    <div class="modal" id="wishModal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modalIcon">🎁</div>
+            <div class="modal-text" id="modalText">Lời chúc...</div>
+            <button class="close-btn" onclick="closeModal()">Nhận Lời Chúc 💖</button>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        // Kho ảnh GIF anime
+        const leftPresets = [
+            "https://media.tenor.com/Mdz2s-fOMggAAAAj/the-fragrant-flower-blooms-with-dignity-kaoruko-waguri.gif",
+            "https://media.tenor.com/lKCbkCShloQAAAAM/horikita.gif"
+        ];
+        const rightPresets = [
+            "https://media.tenor.com/XgHyWyO2BqAAAAAM/kaoruhanawarintosaku-kaoruko.gif",
+            "https://media.tenor.com/Mdz2s-fOMggAAAAj/the-fragrant-flower-blooms-with-dignity-kaoruko-waguri.gif"
+        ];
+        let leftIdx = 0, rightIdx = 0;
+
+        function prevLeftChar() {
+            leftIdx = (leftIdx - 1 + leftPresets.length) % leftPresets.length;
+            document.getElementById('leftCharImg').src = leftPresets[leftIdx];
+        }
+        function nextLeftChar() {
+            leftIdx = (leftIdx + 1) % leftPresets.length;
+            document.getElementById('leftCharImg').src = leftPresets[leftIdx];
+        }
+        function prevRightChar() {
+            rightIdx = (rightIdx - 1 + rightPresets.length) % rightPresets.length;
+            document.getElementById('rightCharImg').src = rightPresets[rightIdx];
+        }
+        function nextRightChar() {
+            rightIdx = (rightIdx + 1) % rightPresets.length;
+            document.getElementById('rightCharImg').src = rightPresets[rightIdx];
+        }
+
+        function uploadChar(event, targetImgId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(targetImgId).src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 20 Lời chúc Sinh Nhật Chị Gái (Độc lập, không trùng lặp)
+        const wishes = [
+            { icon: "🎂", text: "Chúc mừng sinh nhật chị gái yêu dấu của em! Chúc chị tuổi mới luôn xinh đẹp, rạng rỡ và hạnh phúc viên mãn!" },
+            { icon: "💖", text: "Cảm ơn chị vì luôn là người chị tuyệt vời, luôn yêu thương và nhường nhịn em. Chúc chị sinh nhật ngập tràn niềm vui!" },
+            { icon: "🌟", text: "Chúc chị tuổi mới gặt hái được thật nhiều thành công mới trong công việc và cuộc sống!" },
+            { icon: "🎁", text: "Chúc chị gái mau ăn chóng béo (mà mãi giữ dáng), tiền tài rủng rỉnh, tình yêu thăng hoa nhé!" },
+            { icon: "🌸", text: "Mong rằng mọi điều ước trong ngày sinh nhật của chị hôm nay đều sẽ thành hiện thực!" },
+            { icon: "👑", text: "Hôm nay là ngày đặc biệt của nữ hoàng nhà mình! Chúc chị một đời bình an và luôn cười tươi thế này nhé." },
+            { icon: "🍫", text: "Tặng chị sự ngọt ngào nhất! Chúc cuộc sống của chị luôn tràn ngập những điều ngọt ngào như chiếc bánh kem này." },
+            { icon: "💐", text: "Chúc chị tuổi mới thêm một tuổi mới trưởng thành hơn, hạnh phúc hơn và lúc nào cũng gặp may mắn!" },
+            { icon: "✨", text: "Chúc chị gái của em luôn giữ vững năng lượng tích cực và nụ cười tỏa nắng mỗi ngày!" },
+            { icon: "✈️", text: "Chúc chị tuổi mới có thêm nhiều chuyến đi du lịch khám phá thế giới thật thú vị!" },
+            { icon: "💄", text: "Chúc chị ngày càng trẻ trung, xinh đẹp, sắm đồ hiệu mỏi tay không cần nhìn giá!" },
+            { icon: "🍀", text: "Chúc chị gặp toàn may mắn, dữ hóa lành, mọi khó khăn đều vượt qua suôn sẻ." },
+            { icon: "📸", text: "Chúc chị tuổi mới lúc nào chụp ảnh cũng góc nào cũng đẹp, không góc chết!" },
+            { icon: "🧋", text: "Chúc chị ăn uống thả ga, uống trà sữa không bao giờ sợ béo nha!" },
+            { icon: "🛍️", text: "Chúc chị sinh nhật ngập tràn quà cáp và được ai đó cưng chiều hết mực!" },
+            { icon: "🌷", text: "Chúc chị luôn dịu dàng, hạnh phúc và bình yên trước mọi bão giông cuộc đời." },
+            { icon: "🥳", text: "Hôm nay quẩy hết mình đi chị ơi! Chúc mừng sinh nhật chị gái siêu cấp vip pro của em!" },
+            { icon: "💎", text: "Chị là món quà quý giá nhất mà bố mẹ ban tặng cho em. Chúc chị sinh nhật vô cùng ý nghĩa!" },
+            { icon: "☀️", text: "Chúc chị luôn là ánh nắng ấm áp mang niềm vui và tiếng cười đến cho cả nhà." },
+            { icon: "❤️", text: "Yêu chị rất nhiều! Chúc mừng sinh nhật lần thứ 18 (+nhiều lần) của chị gái nhé!" }
+        ];
+
+        const container = document.getElementById('giftsContainer');
+        wishes.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'gift-card';
+            card.id = `gift-${index}`;
+            card.innerHTML = `<span class="gift-icon">🎁</span><span class="gift-title">Quà #${index + 1}</span>`;
+            card.onclick = () => openGift(index);
+            container.appendChild(card);
+        });
+
+        function openGift(index) {
+            ensurePlayMusic();
+            const card = document.getElementById(`gift-${index}`);
+            if (card.classList.contains('opened')) return;
+
+            card.classList.add('opened');
+            card.querySelector('.gift-icon').innerText = wishes[index].icon;
+            document.getElementById('modalIcon').innerText = wishes[index].icon;
+            document.getElementById('modalText').innerText = wishes[index].text;
+            document.getElementById('wishModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('wishModal').style.display = 'none'; }
+
+        function dodgeBtn() {
+            const btn = document.getElementById('noBtn');
+            const maxLeft = window.innerWidth - btn.offsetWidth - 20;
+            const maxTop = window.innerHeight - btn.offsetHeight - 20;
+            btn.style.left = Math.max(20, Math.floor(Math.random() * maxLeft)) + 'px';
+            btn.style.top = Math.max(20, Math.floor(Math.random() * maxTop)) + 'px';
+            btn.style.bottom = 'auto'; btn.style.right = 'auto';
+        }
+
+        // Nhạc & Lyric Chủ đề Sinh Nhật
+        const playlist = [
+            {
+                id: "2Vv-BfVoq4g",
+                lyrics: [
+                    { time: 0, text: "🎂 Chúc mừng sinh nhật chị gái yêu dấu..." },
+                    { time: 10, text: "💖 Mong những điều tuyệt vời nhất đến với chị..." },
+                    { time: 20, text: "🌸 Tuổi mới rạng rỡ và luôn hạnh phúc nhé!" },
+                    { time: 35, text: "✨ Cảm ơn chị vì luôn ở bên cạnh gia đình!" }
+                ]
+            }
+        ];
+        let player, isPlaying = false, lyricInterval;
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0', width: '0', videoId: playlist[0].id,
+                playerVars: { 'autoplay': 1, 'controls': 0 },
+                events: { 'onStateChange': onPlayerStateChange }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            const disc = document.getElementById('vinylDisc');
+            if (event.data === YT.PlayerState.PLAYING) {
+                isPlaying = true; disc.classList.add('playing'); startLyricSync();
+            } else {
+                disc.classList.remove('playing'); stopLyricSync();
+            }
+        }
+
+        function togglePlayPause() {
+            if (!player) return;
+            if (isPlaying) player.pauseVideo(); else player.playVideo();
+        }
+
+        function ensurePlayMusic() {
+            if (player && player.playVideo && !isPlaying) player.playVideo();
+        }
+        document.body.addEventListener('click', ensurePlayMusic, { once: true });
+
+        function startLyricSync() {
+            clearInterval(lyricInterval);
+            lyricInterval = setInterval(() => {
+                if (!player || !player.getCurrentTime) return;
+                const currentTime = player.getCurrentTime();
+                const currentSong = playlist[0];
+                let activeLyric = currentSong.lyrics[0].text;
+                for (let i = 0; i < currentSong.lyrics.length; i++) {
+                    if (currentTime >= currentSong.lyrics[i].time) activeLyric = currentSong.lyrics[i].text;
+                }
+                document.getElementById('lyricText').innerText = activeLyric;
+            }, 500);
+        }
+        function stopLyricSync() { clearInterval(lyricInterval); }
+
+        function changeMusic() {
+            const val = document.getElementById('ytUrlInput').value.trim();
+            if (!val) return;
+            let videoId = val;
+            if (val.includes("v=")) videoId = val.split("v=")[1].split("&")[0];
+            else if (val.includes("youtu.be/")) videoId = val.split("youtu.be/")[1].split("?")[0];
+            if (player && player.loadVideoById) player.loadVideoById(videoId);
+        }
+    </script>
+</body>
+</html>
