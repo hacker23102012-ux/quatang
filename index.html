@@ -25,7 +25,7 @@
             color: #fff;
         }
 
-        /* BỐ CỤC CHÍNH: 3 CỘT (Trái - Giữa - Phải) */
+        /* BỐ CỤC CHÍNH: 3 CỘT */
         .main-layout {
             display: flex;
             justify-content: space-between;
@@ -36,7 +36,6 @@
             z-index: 10;
         }
 
-        /* Khung bên Trái & Bên Phải chứa ảnh GIF anime */
         .side-panel {
             width: 220px;
             display: flex;
@@ -66,7 +65,6 @@
             filter: drop-shadow(0 5px 15px rgba(0,0,0,0.6));
         }
 
-        /* Thanh nút điều khiển dưới mỗi nhân vật (< Upload >) */
         .char-controls {
             display: flex;
             gap: 6px;
@@ -98,7 +96,6 @@
             font-weight: 600;
         }
 
-        /* Khung ở giữa (Nội dung chính) */
         .center-panel {
             flex: 1;
             display: flex;
@@ -161,7 +158,7 @@
             grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
             gap: 10px;
             width: 100%;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .gift-card {
             background: rgba(255, 255, 255, 0.1);
@@ -174,9 +171,66 @@
             transition: all 0.2s;
         }
         .gift-card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.2); }
-        .gift-card.opened { opacity: 0.5; cursor: default; transform: none !important; }
+        .gift-card.locked {
+            opacity: 0.35 !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            filter: grayscale(1);
+        }
         .gift-icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
         .gift-title { font-size: 0.75rem; font-weight: 700; color: #ff9ebb; }
+
+        /* KHU VỰC DƯỚI CÙNG (HIỆN NÚT MÁY BAY KHI MỞ 1 QUÀ) */
+        .bottom-section {
+            display: none; /* Ẩn đến khi chọn quà */
+            text-align: center;
+            margin-top: 10px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .plane-btn {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+            transition: all 0.3s;
+        }
+        .plane-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 71, 87, 0.8);
+        }
+
+        /* MÁY BAY BAY THEO CHUỘT */
+        #planeCursor {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.05s linear;
+        }
+
+        /* PHÁO HOA */
+        .firework-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            border-radius: 50%;
+            animation: explode 0.8s ease-out forwards;
+        }
+        @keyframes explode {
+            0% { opacity: 1; transform: translate(0, 0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+        }
 
         /* Nút nhập nhạc */
         .music-bar {
@@ -187,6 +241,7 @@
             gap: 8px;
             width: 100%;
             max-width: 400px;
+            margin-top: 15px;
             margin-bottom: 10px;
         }
         .music-bar input {
@@ -219,7 +274,7 @@
         .modal {
             display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
-            justify-content: center; align-items: center; z-index: 100; padding: 20px;
+            justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-content {
             background: #2a1b3d; border: 1px solid #ff9ebb; color: #fff;
@@ -236,9 +291,12 @@
 
     <div id="yt-player-container"><div id="player"></div></div>
 
+    <!-- MÁY BAY FLY CURSOR -->
+    <img id="planeCursor" src="https://api.iconify.design/noto:small-airplane.svg" alt="Plane">
+
     <div class="main-layout">
         
-        <!-- BÊN TRÁI: Ảnh GIF anime 1 -->
+        <!-- BÊN TRÁI -->
         <div class="side-panel">
             <div class="char-box">
                 <img id="leftCharImg" src="https://media.tenor.com/Mdz2s-fOMggAAAAj/the-fragrant-flower-blooms-with-dignity-kaoruko-waguri.gif" alt="Char Left">
@@ -252,11 +310,11 @@
             </div>
         </div>
 
-        <!-- Ở GIỮA: Nội dung chính -->
+        <!-- Ở GIỮA -->
         <div class="center-panel">
             <header>
                 <h1>🎉 Chúc Mừng Sinh Nhật Chị Gái 🎂</h1>
-                <p>Mở từng hộp quà để nhận những lời chúc ngọt ngào nhất từ em nhé! 💖</p>
+                <p>Hãy chọn 1 hộp quà duy nhất để nhận lời chúc đặc biệt nhé! 💖</p>
             </header>
 
             <div class="music-visualizer">
@@ -268,7 +326,13 @@
                 </div>
             </div>
 
+            <!-- 20 Hộp Quà -->
             <div class="gifts-grid" id="giftsContainer"></div>
+
+            <!-- KHU VỰC DƯỚI CÙNG (Chỉ hiện khi chọn quà xong) -->
+            <div class="bottom-section" id="bottomSection">
+                <button class="plane-btn" onclick="activatePlaneMode()">🚀 Bật Máy Bay Pháo Hoa Theo Chuột</button>
+            </div>
 
             <div class="music-bar">
                 <span>🎧</span>
@@ -277,7 +341,7 @@
             </div>
         </div>
 
-        <!-- BÊN PHẢI: Ảnh GIF anime 2 -->
+        <!-- BÊN PHẢI -->
         <div class="side-panel">
             <div class="char-box">
                 <img id="rightCharImg" src="https://media.tenor.com/XgHyWyO2BqAAAAAM/kaoruhanawarintosaku-kaoruko.gif" alt="Char Right">
@@ -339,13 +403,11 @@
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById(targetImgId).src = e.target.result;
-            };
+            reader.onload = function(e) { document.getElementById(targetImgId).src = e.target.result; };
             reader.readAsDataURL(file);
         }
 
-        // 20 Lời chúc Sinh Nhật Chị Gái (Độc lập, không trùng lặp)
+        // 20 Lời chúc Sinh Nhật
         const wishes = [
             { icon: "🎂", text: "Chúc mừng sinh nhật chị gái yêu dấu của em! Chúc chị tuổi mới luôn xinh đẹp, rạng rỡ và hạnh phúc viên mãn!" },
             { icon: "💖", text: "Cảm ơn chị vì luôn là người chị tuyệt vời, luôn yêu thương và nhường nhịn em. Chúc chị sinh nhật ngập tràn niềm vui!" },
@@ -366,9 +428,10 @@
             { icon: "🥳", text: "Hôm nay quẩy hết mình đi chị ơi! Chúc mừng sinh nhật chị gái siêu cấp vip pro của em!" },
             { icon: "💎", text: "Chị là món quà quý giá nhất mà bố mẹ ban tặng cho em. Chúc chị sinh nhật vô cùng ý nghĩa!" },
             { icon: "☀️", text: "Chúc chị luôn là ánh nắng ấm áp mang niềm vui và tiếng cười đến cho cả nhà." },
-            { icon: "❤️", text: "Yêu chị rất nhiều! Chúc mừng sinh nhật lần thứ 18 (+nhiều lần) của chị gái nhé!" }
+            { icon: "❤️", text: "Yêu chị rất nhiều! Chúc mừng sinh nhật chị gái yêu nhé!" }
         ];
 
+        let hasOpenedGift = false;
         const container = document.getElementById('giftsContainer');
         wishes.forEach((item, index) => {
             const card = document.createElement('div');
@@ -379,19 +442,88 @@
             container.appendChild(card);
         });
 
+        // Chọn quà -> Khóa tất cả các quà còn lại
         function openGift(index) {
+            if (hasOpenedGift) return; // Nếu đã chọn rồi thì không bấm nữa
+            hasOpenedGift = true;
             ensurePlayMusic();
-            const card = document.getElementById(`gift-${index}`);
-            if (card.classList.contains('opened')) return;
 
-            card.classList.add('opened');
-            card.querySelector('.gift-icon').innerText = wishes[index].icon;
+            // Mở hộp quà được chọn
+            const selectedCard = document.getElementById(`gift-${index}`);
+            selectedCard.querySelector('.gift-icon').innerText = wishes[index].icon;
             document.getElementById('modalIcon').innerText = wishes[index].icon;
             document.getElementById('modalText').innerText = wishes[index].text;
             document.getElementById('wishModal').style.display = 'flex';
+
+            // Khóa TẤT CẢ 20 HỘP QUÀ
+            for (let i = 0; i < 20; i++) {
+                const card = document.getElementById(`gift-${i}`);
+                card.classList.add('locked');
+            }
+
+            // Hiện khu vực bấm nút Máy Bay bên dưới
+            document.getElementById('bottomSection').style.display = 'block';
         }
 
         function closeModal() { document.getElementById('wishModal').style.display = 'none'; }
+
+        // BẬT CHẾ ĐỘ MÁY BAY BẮN PHÁO HOA THEO CHUỘT
+        let planeMode = false;
+        function activatePlaneMode() {
+            planeMode = true;
+            const plane = document.getElementById('planeCursor');
+            plane.style.display = 'block';
+            alert("🚀 Đã bật máy bay! Rê chuột để máy bay đi theo & tự động bắn pháo hoa lên/xuống nhé!");
+        }
+
+        // Theo dõi chuyển động con chuột
+        document.addEventListener('mousemove', (e) => {
+            if (!planeMode) return;
+            const plane = document.getElementById('planeCursor');
+            plane.style.left = e.clientX + 'px';
+            plane.style.top = e.clientY + 'px';
+
+            // Bắn pháo hoa ngẫu nhiên khi di chuột
+            if (Math.random() < 0.25) {
+                spawnFirework(e.clientX, e.clientY);
+            }
+        });
+
+        // Hàm tạo Pháo hoa bắn Hướng Lên (ở nửa dưới) hoặc Hướng Xuống (ở nửa trên)
+        function spawnFirework(x, y) {
+            const isBottomHalf = y > (window.innerHeight / 2); // Kiểm tra chuột ở nửa dưới hay nửa trên
+            const particleCount = 10;
+            const colors = ['#ff4757', '#ff6b81', '#ffbe76', '#ffda79', '#1289a7', '#d63031', '#e84393'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework-particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.width = Math.random() * 8 + 4 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+                // Tính toán hướng bắn
+                const angle = (Math.random() * Math.PI) - (Math.PI / 2); // Góc bắn
+                const speed = Math.random() * 80 + 40;
+
+                let dx = Math.cos(angle) * speed;
+                let dy = Math.sin(angle) * speed;
+
+                if (isBottomHalf) {
+                    dy = -Math.abs(dy); // Ở nửa dưới -> Bắn vọt LÊN TRÊN
+                } else {
+                    dy = Math.abs(dy);  // Ở nửa trên -> Bắn vọt XUỐNG DƯỚI
+                }
+
+                particle.style.setProperty('--dx', dx + 'px');
+                particle.style.setProperty('--dy', dy + 'px');
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
 
         function dodgeBtn() {
             const btn = document.getElementById('noBtn');
@@ -402,7 +534,7 @@
             btn.style.bottom = 'auto'; btn.style.right = 'auto';
         }
 
-        // Nhạc & Lyric Chủ đề Sinh Nhật
+        // Nhạc & Lyric
         const playlist = [
             {
                 id: "2Vv-BfVoq4g",
