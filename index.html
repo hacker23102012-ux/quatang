@@ -180,34 +180,78 @@
         .gift-icon { font-size: 1.6rem; display: block; margin-bottom: 4px; }
         .gift-title { font-size: 0.75rem; font-weight: 700; color: #ff9ebb; }
 
-        /* KHU VỰC DƯỚI CÙNG (HIỆN NÚT MÁY BAY KHI MỞ 1 QUÀ) */
-        .bottom-section {
-            display: none; /* Ẩn đến khi chọn quà */
-            text-align: center;
-            margin-top: 10px;
+        /* BỐ CỤC DƯỚI CÙNG THEO ĐÚNG SƠ ĐỒ (Nút - Thanh - Máy bay) */
+        .plane-section {
+            display: none; /* Chỉ hiện sau khi mở 1 quà */
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
             width: 100%;
+            margin-top: 15px;
+            margin-bottom: 15px;
             animation: fadeIn 0.5s ease;
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .plane-btn {
+        /* Nút Bấm Tròn Bên Trái */
+        .click-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #ff4757, #ff6b81);
             color: #fff;
-            border: none;
-            padding: 12px 28px;
-            font-size: 1rem;
+            border: 2px solid #ff9ebb;
+            font-size: 0.8rem;
             font-weight: 700;
-            border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
-            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-shrink: 0;
         }
-        .plane-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255, 71, 87, 0.8);
+        .click-btn:active { transform: scale(0.92); }
+
+        /* Thanh Tiến Trình Hình Chữ Nhật Ở Giữa */
+        .progress-bar-container {
+            flex: 1;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 158, 187, 0.4);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff6b81, #ffbe76);
+            border-radius: 12px;
+            transition: width 0.2s ease;
+        }
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
         }
 
-        /* MÁY BAY BAY THEO CHUỘT */
+        /* Máy Bay Bên Phải */
+        .plane-static {
+            width: 45px;
+            height: 45px;
+            flex-shrink: 0;
+            transition: transform 0.3s;
+        }
+
+        /* MÁY BAY FLY CURSOR (Khi cất cánh bay theo chuột) */
         #planeCursor {
             position: fixed;
             width: 50px;
@@ -216,7 +260,6 @@
             z-index: 9999;
             display: none;
             transform: translate(-50%, -50%);
-            transition: transform 0.05s linear;
         }
 
         /* PHÁO HOA */
@@ -232,7 +275,7 @@
             100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
         }
 
-        /* Nút nhập nhạc */
+        /* Thanh nhập nhạc */
         .music-bar {
             background: rgba(255, 255, 255, 0.1);
             padding: 6px 12px;
@@ -241,7 +284,7 @@
             gap: 8px;
             width: 100%;
             max-width: 400px;
-            margin-top: 15px;
+            margin-top: 10px;
             margin-bottom: 10px;
         }
         .music-bar input {
@@ -329,9 +372,14 @@
             <!-- 20 Hộp Quà -->
             <div class="gifts-grid" id="giftsContainer"></div>
 
-            <!-- KHU VỰC DƯỚI CÙNG (Chỉ hiện khi chọn quà xong) -->
-            <div class="bottom-section" id="bottomSection">
-                <button class="plane-btn" onclick="activatePlaneMode()">🚀 Bật Máy Bay Pháo Hoa Theo Chuột</button>
+            <!-- BỐ CỤC DƯỚI CÙNG (Nút - Thanh Tiến Trình - Máy Bay) -->
+            <div class="plane-section" id="planeSection">
+                <button class="click-btn" onclick="chargePlane()">Bấm<br>Nạp 🚀</button>
+                <div class="progress-bar-container">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <span class="progress-text" id="progressText">Nạp năng lượng: 0/10</span>
+                </div>
+                <img class="plane-static" id="planeStatic" src="https://api.iconify.design/noto:small-airplane.svg" alt="Static Plane">
             </div>
 
             <div class="music-bar">
@@ -442,13 +490,12 @@
             container.appendChild(card);
         });
 
-        // Chọn quà -> Khóa tất cả các quà còn lại
+        // Chọn quà -> Khóa tất cả các quà còn lại -> Hiển thị thanh nạp máy bay
         function openGift(index) {
-            if (hasOpenedGift) return; // Nếu đã chọn rồi thì không bấm nữa
+            if (hasOpenedGift) return;
             hasOpenedGift = true;
             ensurePlayMusic();
 
-            // Mở hộp quà được chọn
             const selectedCard = document.getElementById(`gift-${index}`);
             selectedCard.querySelector('.gift-icon').innerText = wishes[index].icon;
             document.getElementById('modalIcon').innerText = wishes[index].icon;
@@ -457,41 +504,52 @@
 
             // Khóa TẤT CẢ 20 HỘP QUÀ
             for (let i = 0; i < 20; i++) {
-                const card = document.getElementById(`gift-${i}`);
-                card.classList.add('locked');
+                document.getElementById(`gift-${i}`).classList.add('locked');
             }
 
-            // Hiện khu vực bấm nút Máy Bay bên dưới
-            document.getElementById('bottomSection').style.display = 'block';
+            // Hiện khu vực Nút - Thanh Nạp - Máy Bay bên dưới
+            document.getElementById('planeSection').style.display = 'flex';
         }
 
         function closeModal() { document.getElementById('wishModal').style.display = 'none'; }
 
-        // BẬT CHẾ ĐỘ MÁY BAY BẮN PHÁO HOA THEO CHUỘT
-        let planeMode = false;
-        function activatePlaneMode() {
-            planeMode = true;
-            const plane = document.getElementById('planeCursor');
-            plane.style.display = 'block';
-            alert("🚀 Đã bật máy bay! Rê chuột để máy bay đi theo & tự động bắn pháo hoa lên/xuống nhé!");
+        // XỬ LÝ NẠP NĂNG LƯỢNG MÁY BAY
+        let clicks = 0;
+        const maxClicks = 10;
+        let planeFlying = false;
+
+        function chargePlane() {
+            if (planeFlying) return;
+            clicks++;
+            const fillPercent = (clicks / maxClicks) * 100;
+            document.getElementById('progressFill').style.width = fillPercent + '%';
+            document.getElementById('progressText').innerText = `Nạp năng lượng: ${clicks}/${maxClicks}`;
+
+            // Khi nhấp đủ 10 lần -> Máy bay cất cánh bay theo chuột
+            if (clicks >= maxClicks) {
+                planeFlying = true;
+                document.getElementById('progressText').innerText = "🚀 MÁY BAY ĐÃ CẤT CÁNH!";
+                document.getElementById('planeStatic').style.opacity = '0.3'; // Mờ máy bay tĩnh
+                document.getElementById('planeCursor').style.display = 'block'; // Hiện máy bay bay theo chuột
+            }
         }
 
-        // Theo dõi chuyển động con chuột
+        // Theo dõi chuyển động con chuột khi máy bay cất cánh
         document.addEventListener('mousemove', (e) => {
-            if (!planeMode) return;
+            if (!planeFlying) return;
             const plane = document.getElementById('planeCursor');
             plane.style.left = e.clientX + 'px';
             plane.style.top = e.clientY + 'px';
 
-            // Bắn pháo hoa ngẫu nhiên khi di chuột
+            // Tự động bắn pháo hoa khi di chuột
             if (Math.random() < 0.25) {
                 spawnFirework(e.clientX, e.clientY);
             }
         });
 
-        // Hàm tạo Pháo hoa bắn Hướng Lên (ở nửa dưới) hoặc Hướng Xuống (ở nửa trên)
+        // Hàm tạo Pháo hoa bắn Hướng Lên (nửa dưới) hoặc Hướng Xuống (nửa trên)
         function spawnFirework(x, y) {
-            const isBottomHalf = y > (window.innerHeight / 2); // Kiểm tra chuột ở nửa dưới hay nửa trên
+            const isBottomHalf = y > (window.innerHeight / 2);
             const particleCount = 10;
             const colors = ['#ff4757', '#ff6b81', '#ffbe76', '#ffda79', '#1289a7', '#d63031', '#e84393'];
 
@@ -504,17 +562,16 @@
                 particle.style.height = particle.style.width;
                 particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
 
-                // Tính toán hướng bắn
-                const angle = (Math.random() * Math.PI) - (Math.PI / 2); // Góc bắn
+                const angle = (Math.random() * Math.PI) - (Math.PI / 2);
                 const speed = Math.random() * 80 + 40;
 
                 let dx = Math.cos(angle) * speed;
                 let dy = Math.sin(angle) * speed;
 
                 if (isBottomHalf) {
-                    dy = -Math.abs(dy); // Ở nửa dưới -> Bắn vọt LÊN TRÊN
+                    dy = -Math.abs(dy); // Ở nửa dưới -> Bắn LÊN TRÊN
                 } else {
-                    dy = Math.abs(dy);  // Ở nửa trên -> Bắn vọt XUỐNG DƯỚI
+                    dy = Math.abs(dy);  // Ở nửa trên -> Bắn XUỐNG DƯỚI
                 }
 
                 particle.style.setProperty('--dx', dx + 'px');
